@@ -5,11 +5,15 @@ import com.fleetflow.entity.StatutVehicule;
 import com.fleetflow.entity.Vehicule;
 import com.fleetflow.mapper.VehiculeMapper;
 import com.fleetflow.repository.VehiculeRepo;
+import com.fleetflow.serviceImpl.VehiculeServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -27,32 +31,37 @@ class VehiculeServiceTest {
     VehiculeMapper mapper;
 
     @InjectMocks
-    VehiculeService vehiculeService;
+    VehiculeServiceImpl vehiculeService;
 
     @Test
-    void listeVehiculesDisponibles(){
+    void listeVehiculesDisponibles() {
 
-        //1.arrange
+        // ARRANGE
         Vehicule v1 = new Vehicule();
         v1.setStatut(StatutVehicule.DISPONIBLE);
 
-        when(vehiculeRepo.findByStatut(any()))
-                .thenReturn(List.of(v1));
+        VehiculeResponseDTO dto = new VehiculeResponseDTO();
 
-        when(mapper.toResponseDtoList(anyList()))
-                .thenReturn(List.of(new VehiculeResponseDTO()));
-        //2. act
-        List<VehiculeResponseDTO> result = vehiculeService.listeVehiculesDisponibles();
+        Page<Vehicule> page = new PageImpl<>(List.of(v1));
 
-        //3. assert
-        assertEquals(1, result.size(), "la liste doit contenir un seul élément");
+        when(vehiculeRepo.findByStatut(eq(StatutVehicule.DISPONIBLE), any(Pageable.class)))
+                .thenReturn(page);
 
+        when(mapper.toResponseDto(v1))
+                .thenReturn(dto);
 
+        // ACT
+        Page<VehiculeResponseDTO> result =
+                vehiculeService.listeVehiculesDisponibles(0, 10, "id");
+
+        // ASSERT
+        assertEquals(1, result.getContent().size());
     }
 
     @Test
-    void findCapaciteVehiculeGreaterThan(){
+    void findCapaciteVehiculeGreaterThan() {
 
+        // ARRANGE
         int capaciteMin = 10;
 
         Vehicule v1 = new Vehicule();
@@ -61,22 +70,21 @@ class VehiculeServiceTest {
         VehiculeResponseDTO dto = new VehiculeResponseDTO();
         dto.setCapacite(15);
 
-        when(vehiculeRepo.findByCapaciteGreaterThan(10))
-                .thenReturn(List.of(v1));
+        Page<Vehicule> page = new PageImpl<>(List.of(v1));
 
-        when(mapper.toResponseDtoList(List.of(v1)))
-                .thenReturn(List.of(dto));
+        when(vehiculeRepo.findByCapaciteGreaterThan(eq(capaciteMin), any(Pageable.class)))
+                .thenReturn(page);
 
-        List<VehiculeResponseDTO> result =
-                vehiculeService.findCapaciteVehiculeGreaterThan(capaciteMin);
+        when(mapper.toResponseDto(v1))
+                .thenReturn(dto);
 
+        // ACT
+        Page<VehiculeResponseDTO> result =
+                vehiculeService.findCapaciteVehiculeGreaterThan(capaciteMin, 0, 10, "id");
+
+        // ASSERT
         assertNotNull(result);
-        assertEquals(1, result.size());
-
-        assertTrue(result.get(0).getCapacite() > capaciteMin);
+        assertEquals(1, result.getContent().size());
+        assertTrue(result.getContent().get(0).getCapacite() > capaciteMin);
     }
-
-
-
-
 }

@@ -15,5 +15,5 @@ public interface ClientService {
 
     void deleteClient(Long id);
 
-    List<ClientResponseDTO> getAllClient();
+    Page<ClientResponseDTO> getAllClient(int page, int size,String sortby);
 }

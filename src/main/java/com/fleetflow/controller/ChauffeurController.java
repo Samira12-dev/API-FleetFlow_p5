@@ -50,7 +50,12 @@ public class ChauffeurController {
 
 
     @GetMapping("/disponibles")
-    public ResponseEntity<List<ChauffeurResponseDTO>> listerChauffeursDisponibles() {
-        return ResponseEntity.ok(chauffeurService.listerChauffeursDisponibles());
+    @Operation(summary = "listerChauffeursDisponibles")
+    public ResponseEntity<Page<ChauffeurResponseDTO>>listerChauffeursDisponibles(
+            @RequestParam(defaultValue = "0")int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "nom") String  sortBy) {
+        Page<ChauffeurResponseDTO> responseDTOPage= chauffeurService.listerChauffeursDisponibles(page, size, sortBy);
+        return ResponseEntity.ok(responseDTOPage);
     }
 }

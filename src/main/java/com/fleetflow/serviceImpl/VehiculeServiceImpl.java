@@ -9,6 +9,10 @@ import com.fleetflow.repository.VehiculeRepo;
 import com.fleetflow.service.VehiculeService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,18 +32,24 @@ public class VehiculeServiceImpl implements VehiculeService {
     }
 
     @Transactional
-    public List<VehiculeResponseDTO> listeVehiculesDisponibles() {
-        return mapper.toResponseDtoList(repo.findByStatut(StatutVehicule.DISPONIBLE));
+    public Page<VehiculeResponseDTO> listeVehiculesDisponibles(int page,int size, String sortby) {
+        Pageable pageable= PageRequest.of(page,size, Sort.by(sortby).ascending());
+        Page<Vehicule> vehicules=repo.findByStatut(StatutVehicule.DISPONIBLE,pageable);
+        return vehicules.map(mapper::toResponseDto);
     }
 
     @Transactional
-    public List<VehiculeResponseDTO> findVehiculeByStatut(StatutVehicule statut) {
-        return mapper.toResponseDtoList(repo.findByStatut(statut));
+    public Page<VehiculeResponseDTO> findVehiculeByStatut(StatutVehicule statut, int page,int size, String sortby) {
+        Pageable pageable =PageRequest.of(page,size,Sort.by(sortby).ascending());
+        Page<Vehicule> vehicules=repo.findByStatut(statut,pageable);
+        return vehicules.map(mapper::toResponseDto);
     }
 
     @Transactional
-    public List<VehiculeResponseDTO> findCapaciteVehiculeGreaterThan(int capacite) {
-        return mapper.toResponseDtoList(repo.findByCapaciteGreaterThan(capacite));
+    public Page<VehiculeResponseDTO> findCapaciteVehiculeGreaterThan(int capacite,int page, int size, String sortby) {
+        Pageable pageable=PageRequest.of(page,size,Sort.by(sortby).ascending());
+        Page<Vehicule> vehicules= repo.findByCapaciteGreaterThan(capacite,pageable);
+        return  vehicules.map(mapper::toResponseDto);
     }
 
     @Transactional

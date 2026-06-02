@@ -5,16 +5,23 @@ import com.fleetflow.dto.LivraisonResponseDTO;
 import com.fleetflow.dto.LivraisonStatutRequestDTO;
 import com.fleetflow.entity.StatutLivraison;
 import com.fleetflow.service.LivraisonService;
+import org.springframework.data.domain.Page;
+
 import java.time.LocalDate;
 import java.util.List;
 
 public interface LivraisonService {
+    LivraisonResponseDTO assignerChauffeurEtVehicule(Long livraisonId, Long chauffeurId, Long vehiculeId);
     LivraisonResponseDTO createLivraison(LivraisonRequestDTO livraisondto);
     LivraisonResponseDTO modifierStatut(Long id, LivraisonStatutRequestDTO dto);
-    List<LivraisonResponseDTO> getAllLivraison();
-    List<LivraisonResponseDTO> findByStatut(StatutLivraison statut);
-    List<LivraisonResponseDTO> findByClientId(Long clientId);
-    LivraisonResponseDTO assignerChauffeurEtVehicule(Long livraisonId, Long chauffeurId, Long vehiculeId);
-    List<LivraisonResponseDTO> getBewteenTwoDates(LocalDate start , LocalDate end);
-    List<LivraisonResponseDTO> listerLivraisonsParVilleDestination(String ville);
+    Page<LivraisonResponseDTO> getAllLivraison(int page, int size, String sortby);
+    Page<LivraisonResponseDTO> findByStatut(StatutLivraison statut, int page, int size, String sortby);
+
+    Page<LivraisonResponseDTO> findByClientId(Long clientId, int page, int size, String sortby);
+
+    Page<LivraisonResponseDTO> getBewteenTwoDates(LocalDate start, LocalDate end, int page, int size, String sortby);
+
+    Page<LivraisonResponseDTO> listerLivraisonsParVilleDestination(String ville, int page, int size, String sortby);
 }
+
+

@@ -1,10 +1,12 @@
 package com.fleetflow.controller;
 
+import com.fleetflow.dto.ChauffeurResponseDTO;
 import com.fleetflow.dto.ClientRequestDTO;
 import com.fleetflow.dto.ClientResponseDTO;
 import com.fleetflow.service.ClientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,8 +42,12 @@ public class ClientController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ClientResponseDTO>> getAllCients(){
-        List<ClientResponseDTO> clients= clientService.getAllClient();
+    public ResponseEntity<Page<ClientResponseDTO>> getAllCients(
+            @RequestParam(defaultValue = "0")int page,
+            @RequestParam(defaultValue = "10")int size,
+            @RequestParam(defaultValue = "nom")String sortby
+    ){
+        Page<ClientResponseDTO> clients= clientService.getAllClient(page, size, sortby);
         return  ResponseEntity.ok(clients);
     }
 }

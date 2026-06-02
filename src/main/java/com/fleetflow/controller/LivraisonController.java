@@ -8,6 +8,7 @@ import com.fleetflow.service.LivraisonService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,8 +37,13 @@ public class LivraisonController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LivraisonResponseDTO>> getAllLivraison(){
-        List<LivraisonResponseDTO> listLivraison=service.getAllLivraison();
+    public ResponseEntity<Page<LivraisonResponseDTO>> getAllLivraison(
+            @RequestParam(defaultValue = "0")int page,
+            @RequestParam(defaultValue = "10")int size,
+            @RequestParam(defaultValue = "nom") String sortby
+    ){
+
+        Page<LivraisonResponseDTO> listLivraison=service.getAllLivraison(page, size, sortby);
         return ResponseEntity.ok(listLivraison);
     }
 
@@ -49,24 +55,43 @@ public class LivraisonController {
 
     @GetMapping("/statut/{statut}")
     @Operation(summary = "Trouver les livraisons par statut")
-    public List<LivraisonResponseDTO> findByStatut(@PathVariable StatutLivraison statut) {
-        return service.findByStatut(statut);
+    public ResponseEntity<Page<LivraisonResponseDTO>> findByStatut(@PathVariable StatutLivraison statut,
+                                                   @RequestParam(defaultValue = "0")int page,
+            @RequestParam(defaultValue = "10")int size,
+            @RequestParam(defaultValue = "nom")String sortby) {
+        Page<LivraisonResponseDTO>livraisonResponseDTOS= service.findByStatut(statut,page,size,sortby);
+        return ResponseEntity.ok(livraisonResponseDTOS);
     }
 
     @GetMapping("/client/{clientId}")
     @Operation(summary = "Trouver les livraisons par client")
-    public List<LivraisonResponseDTO> findByClientId(@PathVariable Long clientId) {
-        return service.findByClientId(clientId);
+    public ResponseEntity<Page<LivraisonResponseDTO>> findByClientId(@PathVariable Long clientId,
+                                                     @RequestParam(defaultValue = "0")int page,
+                                                     @RequestParam(defaultValue = "10")int size,
+                                                     @RequestParam(defaultValue = "nom")String sortby) {
+        Page<LivraisonResponseDTO> livraisonResponseDTOS =
+                service.findByClientId(clientId, page, size, sortby);
+
+        return ResponseEntity.ok(livraisonResponseDTOS);
     }
 
     @GetMapping("/between-dates")
-    public List<LivraisonResponseDTO> getBetweenDates(@RequestParam LocalDate start, @RequestParam LocalDate end){
-        return service.getBewteenTwoDates(start, end);
+    public ResponseEntity<Page<LivraisonResponseDTO>> getBetweenDates(@RequestParam LocalDate start, @RequestParam LocalDate end,
+                                                      @RequestParam(defaultValue = "0")int page,
+                                                      @RequestParam(defaultValue = "10")int size,
+                                                      @RequestParam(defaultValue = "nom")String sortby
+    ){
+        Page<LivraisonResponseDTO> livraisonResponseDTOS= service.getBewteenTwoDates(start,end,page,size,sortby);
+        return ResponseEntity.ok(livraisonResponseDTOS);
     }
 
     @GetMapping("/recherche/ville")
-    public ResponseEntity<List<LivraisonResponseDTO>> listerLivraisonsParVille(@RequestParam String ville) {
-        List<LivraisonResponseDTO> livraisons = service.listerLivraisonsParVilleDestination(ville);
+    public ResponseEntity<Page<LivraisonResponseDTO>> listerLivraisonsParVille(@RequestParam String ville,
+                                                                               @RequestParam(defaultValue = "0")int page,
+                                                                               @RequestParam(defaultValue = "10")int size,
+                                                                               @RequestParam(defaultValue = "nom")String sortby) {
+
+        Page<LivraisonResponseDTO> livraisons = service.listerLivraisonsParVilleDestination(ville,page,size,sortby);
         return ResponseEntity.ok(livraisons);
     }
 }

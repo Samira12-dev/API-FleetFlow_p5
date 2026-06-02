@@ -4,11 +4,15 @@ import com.fleetflow.dto.ChauffeurResponseDTO;
 import com.fleetflow.entity.Chauffeur;
 import com.fleetflow.mapper.ChauffeurMapper;
 import com.fleetflow.repository.ChauffeurRepository;
+import com.fleetflow.serviceImpl.ChauffeurServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -25,21 +29,31 @@ class ChauffeurServiceTest {
     private ChauffeurMapper chauffeurMapper;
 
     @InjectMocks
-    private ChauffeurService chauffeurService;
+    private ChauffeurServiceImpl chauffeurService;
 
     @Test
     void listerChauffeursDisponibles() {
+
         Chauffeur chauffeur = new Chauffeur();
         chauffeur.setId(1L);
-        List<Chauffeur> chauffeurs = List.of(chauffeur);
+
         ChauffeurResponseDTO dto = new ChauffeurResponseDTO();
 
-        when(chauffeurRepository.findByDisponibleTrue()).thenReturn(chauffeurs);
-        when(chauffeurMapper.toDto(chauffeur)).thenReturn(dto);
+        Page<Chauffeur> page =
+                new PageImpl<>(List.of(chauffeur));
 
-        List<ChauffeurResponseDTO> result = chauffeurService.listerChauffeursDisponibles();
+        when(chauffeurRepository.findByDisponibleTrue(any(Pageable.class)))
+                .thenReturn(page);
 
-        assertEquals(1, result.size());
-        verify(chauffeurRepository).findByDisponibleTrue();
+        when(chauffeurMapper.toDto(chauffeur))
+                .thenReturn(dto);
+
+        Page<ChauffeurResponseDTO> result =
+                chauffeurService.listerChauffeursDisponibles(0, 10, "id");
+
+        assertEquals(1, result.getContent().size());
+
+        verify(chauffeurRepository)
+                .findByDisponibleTrue(any(Pageable.class));
     }
 }

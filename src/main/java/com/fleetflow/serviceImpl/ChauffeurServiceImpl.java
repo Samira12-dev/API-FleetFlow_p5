@@ -56,10 +56,11 @@ public class ChauffeurServiceImpl implements ChauffeurService {
         chauffeurRepository.deleteById(id);
     }
 
-    public List<ChauffeurResponseDTO> listerChauffeursDisponibles() {
-        return chauffeurRepository.findByDisponibleTrue().stream()
-                .map(chauffeurMapper::toDto)
-                .collect(Collectors.toList());
+    public Page<ChauffeurResponseDTO> listerChauffeursDisponibles(int page, int size, String sortby) {
+        Pageable pageable= PageRequest.of(page,size, Sort.by(sortby).ascending());
+        Page<Chauffeur> chauffeurS= chauffeurRepository.findByDisponibleTrue(pageable);
+        return chauffeurS.map(chauffeurMapper::toDto);
+
     }
 
     public Page<ChauffeurResponseDTO> listerTousLesChauffeurs(int page,int size,String sortby) {

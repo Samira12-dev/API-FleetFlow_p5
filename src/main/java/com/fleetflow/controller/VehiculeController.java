@@ -6,6 +6,9 @@ import com.fleetflow.service.VehiculeService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,19 +40,30 @@ public class VehiculeController {
 
     @GetMapping("/disponibles")
     @Operation(summary = "Lister les vehicules disponibles")
-    public List<VehiculeResponseDTO> listerDisponibles() {
-        return service.listeVehiculesDisponibles();
+    public ResponseEntity<Page<VehiculeResponseDTO> >listerDisponibles(@RequestParam(defaultValue = "0")int  page,
+                                                                      @RequestParam(defaultValue = "10")int size,
+                                                                      @RequestParam(defaultValue = "nom")String sotby) {
+        Page<VehiculeResponseDTO> vehiculeResponseDTOS=service.listeVehiculesDisponibles(page, size, sotby);
+        return ResponseEntity.ok(vehiculeResponseDTOS);
     }
 
     @GetMapping("/statut/{statut}")
     @Operation(summary = "Trouver les vehicules par statut")
-    public List<VehiculeResponseDTO> getVehiculeByStatut(@PathVariable StatutVehicule statut) {
-        return service.findVehiculeByStatut(statut);
+    public ResponseEntity< Page<VehiculeResponseDTO> >getVehiculeByStatut(@PathVariable StatutVehicule statut,
+                                                                          @RequestParam(defaultValue = "0")int page,
+                                                                           @RequestParam(defaultValue = "10")int size,
+                                                                          @RequestParam(defaultValue = "nom")String sortby) {
+        Page<VehiculeResponseDTO>vehicules=service.findVehiculeByStatut(statut,page,size,sortby);
+        return ResponseEntity.ok(vehicules);
     }
 
     @GetMapping("/capacite/{capacite}")
     @Operation(summary = "Trouver les vehicules avec capacite superieure")
-    public List<VehiculeResponseDTO> getVehiculeByCapacite(@PathVariable int capacite) {
-        return service.findCapaciteVehiculeGreaterThan(capacite);
+    public ResponseEntity<Page<VehiculeResponseDTO>>getVehiculeByCapacite(@PathVariable int capacite,
+                                                           @RequestParam(defaultValue = "0")int page,
+                                                           @RequestParam(defaultValue = "10")int size,
+                                                           @RequestParam(defaultValue = "nom")String sortby)  {
+        Page<VehiculeResponseDTO>vehiculeResponseDTOS=service.findCapaciteVehiculeGreaterThan(capacite, page, size, sortby);
+        return ResponseEntity.ok(vehiculeResponseDTOS);
     }
 }

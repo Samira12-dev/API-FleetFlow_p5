@@ -9,6 +9,9 @@ import com.fleetflow.service.ClientService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,9 +44,10 @@ public class ClientServiceImpl implements ClientService {
     }
 
 
-    public List<ClientResponseDTO> getAllClient(){
-        List<Client> clients = clientRepo.findAll();
-        return clients.stream().map(clientMapper::toDTO).toList();
+    public Page<ClientResponseDTO> getAllClient(int page, int size, String sortby){
+        Pageable pageable = PageRequest.of(page,size, Sort.by(sortby).ascending());
+        Page<Client> clients = clientRepo.findAll(pageable);
+        return clients.map(clientMapper::toDTO);
 
     }
 

@@ -11,5 +11,5 @@ public interface ChauffeurService {
     ChauffeurResponseDTO ajouterChauffeur(ChauffeurRequestDTO requestDTO);
     ChauffeurResponseDTO modifierChauffeur(Long id, ChauffeurRequestDTO requestDTO);
     void supprimerChauffeur(Long id);
-    List<ChauffeurResponseDTO> listerChauffeursDisponibles();
+    Page<ChauffeurResponseDTO> listerChauffeursDisponibles(int page,int size, String sortBy);
     Page<ChauffeurResponseDTO> listerTousLesChauffeurs(int page, int size, String sortBy);}

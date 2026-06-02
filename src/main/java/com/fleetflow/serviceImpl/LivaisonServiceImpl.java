@@ -12,6 +12,10 @@ import com.fleetflow.repository.VehiculeRepo;
 import com.fleetflow.service.LivraisonService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -54,18 +58,24 @@ public class LivaisonServiceImpl implements LivraisonService {
     }
 
     @Transactional
-    public List<LivraisonResponseDTO> getAllLivraison(){
-        List<Livraison> livraisons = repo.findAll();
-        //return livraisons.stream().map(livraisonMapper::toDto).toList();
-        return mapper.toResponseDtoList(livraisons);
+    public Page<LivraisonResponseDTO> getAllLivraison(int page,int size,String sortby){
+        Pageable pageable = PageRequest.of(page,size, Sort.by(sortby).ascending());
+        Page<Livraison> livraisons = repo.findAll(pageable);
+
+        return livraisons.map(mapper::toResponseDto);
     }
 
-    public List<LivraisonResponseDTO> findByStatut(StatutLivraison statut) {
-        return mapper.toResponseDtoList(repo.findByStatut(statut));
+    public Page<LivraisonResponseDTO> findByStatut(StatutLivraison statut, int page,int size, String sortby) {
+        Pageable pageable= PageRequest .of(page,size,Sort.by(sortby).ascending());
+        Page<Livraison> livraisons=repo.findByStatut(statut,pageable);
+        return livraisons.map(mapper::toResponseDto);
+
     }
 
-    public List<LivraisonResponseDTO> findByClientId(Long clientId) {
-        return mapper.toResponseDtoList(repo.findByClientId(clientId));
+    public Page<LivraisonResponseDTO> findByClientId(Long clientId,int page, int size, String sortby) {
+        Pageable pageable= PageRequest.of(page,size,Sort.by(sortby).ascending());
+        Page<Livraison> livraisons= repo.findByClientId(clientId,pageable);
+        return livraisons.map(mapper::toResponseDto);
     }
 
     public LivraisonResponseDTO assignerChauffeurEtVehicule(Long livraisonId, Long chauffeurId, Long vehiculeId) {
@@ -78,14 +88,15 @@ public class LivaisonServiceImpl implements LivraisonService {
         return mapper.toResponseDto(repo.save(livraison));
     }
 
-    public List<LivraisonResponseDTO> getBewteenTwoDates(LocalDate start , LocalDate end){
-        List<Livraison> livraisons = repo.findByDateLivraisonBetween(start,end);
-        return mapper.toResponseDtoList(livraisons);
+    public Page<LivraisonResponseDTO> getBewteenTwoDates(LocalDate start , LocalDate end, int page, int size, String sortby){
+        Pageable pageable =PageRequest.of(page,size,Sort.by(sortby).ascending());
+        Page<Livraison> livraisons = repo.findByDateLivraisonBetween(start,end,pageable);
+        return livraisons.map(mapper::toResponseDto);
     }
 
-    public List<LivraisonResponseDTO> listerLivraisonsParVilleDestination(String ville) {
-        return repo.findLivraisonsParVilleDestination(ville).stream()
-                .map(mapper::toResponseDto)
-                .collect(Collectors.toList());
+    public Page<LivraisonResponseDTO> listerLivraisonsParVilleDestination(String ville,int page,int size, String sortby) {
+        Pageable pageable=PageRequest.of(page,size,Sort.by(sortby).ascending());
+        Page<Livraison> livraisons= repo.findLivraisonsParVilleDestination(ville,pageable);
+        return  livraisons.map(mapper::toResponseDto);
     }
 }
