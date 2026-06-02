@@ -1,0 +1,1 @@
+alter table chauffeur drop  column  nom

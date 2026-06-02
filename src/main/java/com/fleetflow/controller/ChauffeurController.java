@@ -3,8 +3,10 @@ package com.fleetflow.controller;
 import com.fleetflow.dto.ChauffeurRequestDTO;
 import com.fleetflow.dto.ChauffeurResponseDTO;
 import com.fleetflow.service.ChauffeurService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,9 +38,16 @@ public class ChauffeurController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ChauffeurResponseDTO>> listerTousLesChauffeurs() {
-        return ResponseEntity.ok(chauffeurService.listerTousLesChauffeurs());
+    @Operation(summary = "liste tous les chauffeur")
+    public ResponseEntity<Page<ChauffeurResponseDTO>> listerTousLesChauffeurs(
+            @RequestParam(defaultValue = "0")int page,
+            @RequestParam(defaultValue = "10")int size,
+            @RequestParam(defaultValue = "nom")String sortBy) {
+        Page<ChauffeurResponseDTO> responseDTOPage= chauffeurService.listerTousLesChauffeurs(page,size,sortBy);
+        return ResponseEntity.ok(responseDTOPage);
     }
+
+
 
     @GetMapping("/disponibles")
     public ResponseEntity<List<ChauffeurResponseDTO>> listerChauffeursDisponibles() {

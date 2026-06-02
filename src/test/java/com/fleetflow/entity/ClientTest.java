@@ -4,7 +4,7 @@ import com.fleetflow.dto.ClientRequestDTO;
 import com.fleetflow.dto.ClientResponseDTO;
 import com.fleetflow.mapper.ClientMapper;
 import com.fleetflow.repository.ClientRepo;
-import com.fleetflow.service.ClientService;
+import com.fleetflow.serviceImpl.ClientServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,7 +22,7 @@ class ClientTest {
     @Mock
     private ClientMapper clientMapper;
     @InjectMocks
-    private ClientService clientService;
+    private ClientServiceImpl clientService;
 
     @Test
    void AjouterClient(){

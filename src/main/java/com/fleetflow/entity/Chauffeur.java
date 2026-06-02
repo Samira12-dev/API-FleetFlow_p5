@@ -7,14 +7,9 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data @NoArgsConstructor @AllArgsConstructor
-public class Chauffeur {
+@PrimaryKeyJoinColumn(name = "id")
+public class Chauffeur extends User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
-    private String nom;
 
     @Column(nullable = false, unique = true)
     private String telephone;
@@ -24,4 +19,6 @@ public class Chauffeur {
 
     @Column(nullable = false)
     private boolean disponible = true;
+
+
 }
