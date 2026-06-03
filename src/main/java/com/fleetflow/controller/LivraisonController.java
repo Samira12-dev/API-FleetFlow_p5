@@ -135,5 +135,14 @@ public class LivraisonController {
         return ResponseEntity.ok(myLivraisons);
     }
 
+    @PreAuthorize("hasRole('CHAUFFEUR')")
+    @PatchMapping("/{id}/statut")
+    public ResponseEntity<LivraisonResponseDTO> updateStatut(
+            @PathVariable Long id,
+            @RequestBody LivraisonStatutRequestDTO dto) {
 
+        return ResponseEntity.ok(
+                service.updateMyLivraisonStatut(id, dto)
+        );
+    }
 }

@@ -21,14 +21,18 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<Map<String ,Object>> register(@RequestBody RegisterRequestDto request) {
-        return ResponseEntity.ok(authService.register(request));
 
-    }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>>login(@RequestBody LoginRequestDto request) {
-       return ResponseEntity.ok(authService.login(request));
+    public ResponseEntity<Map<String, Object>> login(
+            @RequestBody LoginRequestDto request) {
+        System.out.println("LOGIN ENDPOINT CALLED");
+        return ResponseEntity.ok(authService.login(request));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<Map<String, Object>> register(
+            @RequestBody RegisterRequestDto request) {
+        return ResponseEntity.ok(authService.register(request));
     }
 }
