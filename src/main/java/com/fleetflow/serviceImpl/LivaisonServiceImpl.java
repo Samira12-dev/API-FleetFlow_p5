@@ -10,14 +10,17 @@ import com.fleetflow.repository.ClientRepo;
 import com.fleetflow.repository.LivraisonRepo;
 import com.fleetflow.repository.VehiculeRepo;
 import com.fleetflow.service.LivraisonService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -99,4 +102,50 @@ public class LivaisonServiceImpl implements LivraisonService {
         Page<Livraison> livraisons= repo.findLivraisonsParVilleDestination(ville,pageable);
         return  livraisons.map(mapper::toResponseDto);
     }
+
+    @Override
+    public Page<LivraisonResponseDTO> getMyLivrassion(int page, int size, String sortby) {
+     String username= SecurityContextHolder.getContext()
+             .getAuthentication().getName();
+     Chauffeur chauffeur = chauffeurRepo.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("Chauffeur not found"));
+
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(sortby).ascending()
+        );
+
+        Page<Livraison> livraisons =
+                repo.findByChauffeurId(chauffeur.getId(), pageable);
+
+        return livraisons.map(mapper::toResponseDto);
+    }
+    @Transactional
+    public LivraisonResponseDTO updateMyLivraisonStatut(
+            Long livraisonId,
+            LivraisonStatutRequestDTO dto)
+    {
+
+        String username = SecurityContextHolder.getContext()
+                .getAuthentication().getName();
+
+        Chauffeur chauffeur = chauffeurRepo.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("Chauffeur not found"));
+
+        Livraison livraison = repo.findById(livraisonId)
+                .orElseThrow(() -> new EntityNotFoundException("Livraison not found"));
+
+        if (!livraison.getChauffeur().getId().equals(chauffeur.getId())) {
+            throw new RuntimeException("You can't modify this delivery");
+        }
+
+        livraison.setStatut(dto.getStatut());
+
+        Livraison saved = repo.save(livraison);
+
+        return mapper.toResponseDto(saved);
+    }
+
+
 }

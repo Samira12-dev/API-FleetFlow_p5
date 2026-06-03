@@ -43,7 +43,8 @@ public class AuthServiceImpl implements AuthService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        user.setRole(Role.MANAGER);
+        Role role = request.getRole() != null ? request.getRole() : Role.MANAGER;
+        user.setRole(role);
 
         User savedUser = userRepository.save(user);
 
@@ -55,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
         Map<String, Object> response = new HashMap<>();
 
         response.put("token", token);
-        response.put("type", "Bearer");
+        response.put("type", "Bearer ");
         response.put("email", savedUser.getEmail());
         response.put("username", savedUser.getUsername());
         response.put("role", savedUser.getRole());

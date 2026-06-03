@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.management.relation.Role;
+import com.fleetflow.entity.Role;
 
 @Data
 @AllArgsConstructor

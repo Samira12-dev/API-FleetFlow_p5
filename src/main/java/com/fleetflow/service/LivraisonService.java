@@ -22,6 +22,9 @@ public interface LivraisonService {
     Page<LivraisonResponseDTO> getBewteenTwoDates(LocalDate start, LocalDate end, int page, int size, String sortby);
 
     Page<LivraisonResponseDTO> listerLivraisonsParVilleDestination(String ville, int page, int size, String sortby);
+
+    Page<LivraisonResponseDTO> getMyLivrassion(int page, int size, String sortby);
+    LivraisonResponseDTO updateMyLivraisonStatut(Long livraisonId, LivraisonStatutRequestDTO dto);
 }
 
 

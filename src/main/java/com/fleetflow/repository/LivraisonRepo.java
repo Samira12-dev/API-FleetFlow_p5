@@ -26,4 +26,6 @@ public interface LivraisonRepo extends JpaRepository<Livraison, Long> {
 
     @Query("select count(l) from Livraison l where l.chauffeur.id = ?1")
     long totalLivraisonsByChauffeur( Long chauffeurId);
+
+    Page<Livraison> findByChauffeurId(Long chauffeurId,Pageable pageable);
 }

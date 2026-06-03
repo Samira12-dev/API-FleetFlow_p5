@@ -21,4 +21,5 @@ public class LivraisonRequestDTO {
     private String adresseDestination;
     @NotNull(message = "L'ID du client est obligatoire")
     private Long clientId;
+
 }
