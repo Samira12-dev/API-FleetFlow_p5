@@ -1,0 +1,6 @@
+UPDATE users SET role = UPPER(role);
+
+ALTER TABLE users
+    MODIFY COLUMN role
+    ENUM('ADMIN', 'MANAGER', 'CHAUFFEUR')
+    NOT NULL;
