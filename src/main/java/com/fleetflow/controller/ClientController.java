@@ -20,28 +20,28 @@ import java.util.List;
 public class ClientController {
     private  final ClientService clientService;
 
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER'")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @Operation(summary = "admin & maanger can create client")
     @PostMapping
     public ResponseEntity<ClientRequestDTO> createClient(@Valid @RequestBody ClientRequestDTO client){
         ClientResponseDTO create= clientService.addClient(client);
         return  ResponseEntity.ok(client);
     }
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER'")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @Operation(summary = "admin & maanger can update client")
     @PutMapping("{id}")
     public  ResponseEntity<ClientResponseDTO> updateClient(@PathVariable Long id, @Valid @RequestBody ClientRequestDTO client){
         ClientResponseDTO updateClient= clientService.updateClient(id,client);
         return  ResponseEntity.ok(updateClient);
     }
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER'")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @Operation(summary = "admin & maanger can get client by id")
     @GetMapping("/{id}")
     public ResponseEntity<ClientResponseDTO> getClientById(@PathVariable Long id){
         return ResponseEntity.ok(clientService.findById(id));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER'")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @Operation(summary = "admin & maanger can delete client by id")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteClientByID(@PathVariable Long id){
@@ -49,7 +49,7 @@ public class ClientController {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER'")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @Operation(summary = "admin & maanger can get all  clients")
     @GetMapping
     public ResponseEntity<Page<ClientResponseDTO>> getAllCients(

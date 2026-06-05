@@ -23,7 +23,7 @@ public class LivraisonController {
     private final LivraisonService service;
 
 
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER'")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @Operation(summary = "admin & maanger can create livraison")
     @PostMapping
     public ResponseEntity<LivraisonResponseDTO> createLivraison(@Valid @RequestBody LivraisonRequestDTO livraisonRequestDTO){
@@ -32,7 +32,7 @@ public class LivraisonController {
     }
 
 
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER'")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @Operation(summary = "admin & maanger can assignerRessources")
     @PutMapping("/{id}/assigner")
     public ResponseEntity<LivraisonResponseDTO> assignerRessources(
@@ -43,7 +43,7 @@ public class LivraisonController {
     }
 
 
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER'")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @Operation(summary = "admin & maanger can get all  livraisons")
     @GetMapping
     public ResponseEntity<Page<LivraisonResponseDTO>> getAllLivraison(
@@ -57,7 +57,7 @@ public class LivraisonController {
     }
 
 
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER',CHAUFFEUR")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','CHAUFFEUR')")
     @PutMapping("/{id}/statut")
     @Operation(summary = " admin & manager, CHAUFFEUR Modifier le statut d'une livraison")
     public LivraisonResponseDTO modifierStatut(@PathVariable Long id, @Valid @RequestBody LivraisonStatutRequestDTO dto) {
@@ -65,7 +65,7 @@ public class LivraisonController {
     }
 
 
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER'")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @GetMapping("/statut/{statut}")
     @Operation(summary = " admin & manager Trouver les livraisons par statut")
     public ResponseEntity<Page<LivraisonResponseDTO>> findByStatut(@PathVariable StatutLivraison statut,
@@ -77,7 +77,7 @@ public class LivraisonController {
     }
 
 
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER'")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @GetMapping("/client/{clientId}")
     @Operation(summary =  " Admin & manager Trouver les livraisons par client")
     public ResponseEntity<Page<LivraisonResponseDTO>> findByClientId(@PathVariable Long clientId,
@@ -91,7 +91,7 @@ public class LivraisonController {
     }
 
 
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER'")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @Operation(summary = "admin & maanger can get between days")
     @GetMapping("/between-dates")
     public ResponseEntity<Page<LivraisonResponseDTO>> getBetweenDates(@RequestParam LocalDate start, @RequestParam LocalDate end,
@@ -105,7 +105,7 @@ public class LivraisonController {
 
 
 
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER'")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @Operation(summary = "admin & maanger can lister livraison par ville")
     @GetMapping("/recherche/ville")
     public ResponseEntity<Page<LivraisonResponseDTO>> listerLivraisonsParVille(@RequestParam String ville,

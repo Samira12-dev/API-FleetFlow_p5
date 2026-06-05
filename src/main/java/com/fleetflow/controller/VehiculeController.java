@@ -45,7 +45,7 @@ public class VehiculeController {
     }
 
 
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER'")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @GetMapping("/disponibles")
     @Operation(summary = "admin & manager Lister les vehicules disponibles")
     public ResponseEntity<Page<VehiculeResponseDTO> >listerDisponibles(@RequestParam(defaultValue = "0")int  page,

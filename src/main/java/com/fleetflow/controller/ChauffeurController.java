@@ -43,7 +43,7 @@ public class ChauffeurController {
         chauffeurService.supprimerChauffeur(id);
         return ResponseEntity.noContent().build();
     }
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER'")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @GetMapping
     @Operation(summary = " Admin & manager liste tous les chauffeur")
     public ResponseEntity<Page<ChauffeurResponseDTO>> listerTousLesChauffeurs(
@@ -55,7 +55,7 @@ public class ChauffeurController {
     }
 
 
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER'")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @GetMapping("/disponibles")
     @Operation(summary = "Admin & manager lister Chauffeurs Disponibles")
     public ResponseEntity<Page<ChauffeurResponseDTO>>listerChauffeursDisponibles(
