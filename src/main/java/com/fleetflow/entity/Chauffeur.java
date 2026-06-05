@@ -1,12 +1,14 @@
 package com.fleetflow.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Data @NoArgsConstructor @AllArgsConstructor
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
 @PrimaryKeyJoinColumn(name = "id")
 public class Chauffeur extends User {
 

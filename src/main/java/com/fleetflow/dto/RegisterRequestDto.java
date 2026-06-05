@@ -25,4 +25,11 @@ public class RegisterRequestDto {
 
     private Role role;
 
+    private String telephone;
+
+    private String permisType;
+
+    private boolean disponible;
+
+
 }

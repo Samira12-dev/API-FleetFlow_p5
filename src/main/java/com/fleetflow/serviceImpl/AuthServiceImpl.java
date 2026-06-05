@@ -2,8 +2,10 @@ package com.fleetflow.serviceImpl;
 
 import com.fleetflow.dto.LoginRequestDto;
 import com.fleetflow.dto.RegisterRequestDto;
+import com.fleetflow.entity.Chauffeur;
 import com.fleetflow.entity.Role;
 import com.fleetflow.entity.User;
+import com.fleetflow.repository.ChauffeurRepository;
 import com.fleetflow.repository.UserRepo;
 import com.fleetflow.security.JwtService;
 import com.fleetflow.service.AuthService;
@@ -19,12 +21,18 @@ import java.util.Map;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepo userRepository;
+    private final ChauffeurRepository chauffeurRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    public AuthServiceImpl(UserRepo userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService) {
+    public AuthServiceImpl(UserRepo userRepository,
+                           ChauffeurRepository chauffeurRepository,
+                           PasswordEncoder passwordEncoder,
+                           AuthenticationManager authenticationManager,
+                           JwtService jwtService) {
         this.userRepository = userRepository;
+        this.chauffeurRepository = chauffeurRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
@@ -37,16 +45,33 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Email already exists");
         }
 
-        User user = new User();
-
-        user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-
         Role role = request.getRole() != null ? request.getRole() : Role.MANAGER;
-        user.setRole(role);
 
-        User savedUser = userRepository.save(user);
+        User savedUser;
+
+        if (role == Role.CHAUFFEUR) {
+
+            Chauffeur chauffeur = new Chauffeur();
+            chauffeur.setUsername(request.getUsername());
+            chauffeur.setEmail(request.getEmail());
+            chauffeur.setPassword(passwordEncoder.encode(request.getPassword()));
+            chauffeur.setRole(Role.CHAUFFEUR);
+            chauffeur.setTelephone("");
+            chauffeur.setPermisType("");
+            chauffeur.setDisponible(false);
+
+            savedUser = chauffeurRepository.save(chauffeur);
+
+        } else {
+
+            User user = new User();
+            user.setUsername(request.getUsername());
+            user.setEmail(request.getEmail());
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            user.setRole(role);
+
+            savedUser = userRepository.save(user);
+        }
 
         String token = jwtService.generateToken(
                 savedUser.getEmail(),
@@ -54,30 +79,30 @@ public class AuthServiceImpl implements AuthService {
         );
 
         Map<String, Object> response = new HashMap<>();
-
         response.put("token", token);
-        response.put("type", "Bearer ");
+        response.put("type", "Bearer");
         response.put("email", savedUser.getEmail());
         response.put("username", savedUser.getUsername());
         response.put("role", savedUser.getRole());
 
         return response;
     }
+
     @Override
     public Map<String, Object> login(LoginRequestDto request) {
 
-      try {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
-      }catch (Exception e){
-          e.printStackTrace();
-          throw  e;
-      }
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -87,7 +112,6 @@ public class AuthServiceImpl implements AuthService {
         );
 
         Map<String, Object> response = new HashMap<>();
-
         response.put("token", token);
         response.put("type", "Bearer");
         response.put("email", user.getEmail());
